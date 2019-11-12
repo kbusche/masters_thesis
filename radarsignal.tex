@@ -1,0 +1,33 @@
+\chapter{Frequency Modulated Continuous Wave Radar}
+As the name Frequency Modulated Continuous Wave (FMCW) implies, a FMCW radar is
+a continuous time system which transmits and receives a periodic signal whose 
+frequency has been modulated. As a periodic signal, the transmitted signal has
+the complex form (with unit-normalized amplitude)
+\begin{equation}
+	\label{eq:complex-sinusoid}
+	p(t) = e^{j2\pi f(t)t}.
+\end{equation}
+The typical frequency modulation used in FMCW radar systems is the sawtooth
+modulation, given by
+\cite{iovescufundamentals, wang2008digital}
+\begin{equation}
+	\label{eq:sawtooth}
+	f(t) = f_c + \alpha t, \quad 0<t<T_c 
+\end{equation}
+where $\alpha > 0$ is the chirp-rate  $\frac{df}{dt}$, $f_c$ is the base
+carrier frequency (e.g. 77 GHz), and $T_c$ is the period of the chirp. The
+maximum frequency of each chirp is thus
+\begin{equation}
+	f_{max} \triangleq f_c + \alpha T_c,
+\end{equation}
+and the bandwidth $B$ of the signal is
+\begin{equation}
+	B = f_{max} - f_c = \alpha T_c.
+\end{equation}
+
+Combining the sawtooth frequency modulation (\ref{eq:sawtooth}) with the complex
+sinusoid (\ref{eq:complex-sinusoid}), we get
+the transmitted pulse as
+\begin{equation}
+	p(t) = e^{j(2\pi f_c t+ \pi \alpha t^2)}.
+\end{equation}
