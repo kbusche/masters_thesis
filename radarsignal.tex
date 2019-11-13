@@ -27,7 +27,55 @@ and the bandwidth $B$ of the signal is
 
 Combining the sawtooth frequency modulation (\ref{eq:sawtooth}) with the complex
 sinusoid (\ref{eq:complex-sinusoid}), we get
-the transmitted pulse as
+the transmitted (TX) signal as
 \begin{equation}
 	p(t) = e^{j(2\pi f_c t+ \pi \alpha t^2)}.
 \end{equation}
+
+\section{Range Measurement}
+Consider a target at a distance $d$ from the radar, such that the transmitted
+(RX) signal reflects off the target and returns to the radar. This received signal
+will be a time delayed version of the TX signal, where the time delay $\tau$ is
+given by
+\begin{equation}
+	\tau = \frac{2d}{c}
+\end{equation}
+where $c$ is the speed of light. The RX signal thus has the form
+\begin{equation}
+	p(t-\tau)=e^{j(2\pi f_c (t-\tau) + \pi\alpha (t-\tau)^2)}.
+\end{equation}
+To recover $\tau$, and subsequently $d$, we define a new dechirped signal $r(t)$
+as the product of the transmitted signal with the complex conjugate of the
+received signal
+\begin{align}
+	r(t) &\triangleq p(t)p^*(t-\tau) \\
+	&= e^{j(2\pi f_c t + \pi \alpha t^2)}e^{-j[2\pi f_c (t-\tau) + \pi\alpha (t-\tau)^2 ]} \\
+	&= e^{j(2\pi f_c \tau - \pi \alpha \tau^2)}e^{j2\pi\alpha\tau t}.\label{eq:range}
+\end{align}
+Note, the first exponential in (\ref{eq:range}) only depends on $\tau$, so it is
+a constant phase term. However, the second term varies according to a constant
+frequency (named the beat frequency) $f_b$
+\begin{equation}
+	f_b \triangleq \alpha \tau.
+\end{equation}
+The maximum beat frequency occurs when $\tau = T_c$, as any $\tau > T_c$ will
+appear as $\tau^*$
+\begin{equation}
+	\tau^* = \tau - T_c, \quad \tau > T_c
+\end{equation}
+and thus the recovered distance $d^*$ will be less than the true range the
+target is from the radar. From this, we can get our maximum recoverable distance
+for a given chirp period
+\begin{equation}
+	d_{max} = \frac{c T_c}{2}.
+\end{equation}
+To recover the beat frequency $f_b$ from the dechirped signal, $r(t)$, we can
+simply use the Fourier Transform to get
+\begin{align}
+	R(f) &= \int_{-\infty}^{\infty} r(t) e^{-j2 \pi ft} dt\\
+	&= \int_{-\infty}^{\infty} e^{j(2\pi f_c \tau - \pi \alpha \tau^2)}e^{j2\pi\alpha\tau t} e^{-j2\pi ft}dt\\
+	&= e^{j(2\pi f_c \tau - \pi \alpha
+	\tau^2)}\int_{-\infty}^{\infty}e^{-j2\pi(f - \alpha\tau ) t} dt\\
+	&= e^{j(2\pi f_c \tau - \pi \alpha \tau^2)}\delta (f - \alpha \tau).
+\end{align}
+
