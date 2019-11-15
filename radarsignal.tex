@@ -165,10 +165,10 @@ frequency (named the beat frequency) $f_b$
 \begin{equation}
 	f_b \triangleq \alpha \tau.
 \end{equation}
-The maximum beat frequency occurs when $\tau = T_c$, as any $\tau > T_c$ will
+The maximum beat frequency occurs when $\tau = T_c$, as any $\tau \in (T_c, 2T_c]$ will
 appear as $\tau^*$
 \begin{equation}
-	\tau^* = \tau - T_c, \quad \tau > T_c
+	\tau^* = \tau - T_c, \quad \tau \in (T_c, 2T_c]
 \end{equation}
 and thus the recovered distance $d^*$ will be less than the true range the
 target is from the radar. From this, we can get our maximum recoverable distance
@@ -187,4 +187,99 @@ simply use the Fourier Transform to get
 \end{align}
 where $\delta(f)$ is the Dirac Delta function.
 
+Now consider the case of multiple ($N$) objects at different distances $d_i$ from the radar.
+\begin{equation}
+	d_i \not = d_j \quad \text{for } i \not = j, \quad i,j \in [1, N]
+\end{equation}
+Each of these objects will reflect the transmitted chirp with a unique delay
+$\tau_i$, and therefore will have a unique beat frequency corresponding to these
+delays. Using the continuous time Fourier Transform, we can always resolve the
+unique beat frequencies corresponding to the time delays. In practice, there is
+a limit to the range resolution as a result of sampling the received signals,
+which will be discussed in Chapter 3.
 
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}
+		\begin{axis}[
+		axis x line = bottom,
+		axis y line = left,
+		xlabel = $t$,
+		ylabel=$f(t)$,
+		xmin=0, xmax=8,
+		ymin=0.5, ymax=3.2,
+		xtick=\empty,
+		ytick=\empty,
+		xlabel near ticks,
+		ylabel near ticks,
+		extra x ticks={1,4,8},
+		extra x tick labels={$\tau$,$T_c$, $2T_c$},
+		extra y ticks={0.5, 1, 1.5, 3},
+		extra y tick labels={$0$, $f_c$, $f_b$, $f_{max}$},
+		]
+		\addplot [
+		domain=0:8,
+		samples=100,
+		color=black,
+		]
+		{(1 + 0.5*x)*(x<4)+(1+0.5*(x-4))*(x>4)};
+		\addplot [
+		domain=0:8,
+		samples=100,
+		color=red,
+		]
+		{(x<1)*1 + (1+0.5*(x-1))*(x>1)*(x<5) + (1+0.5*(x-5))*(x>5)};
+		\addplot [
+		domain=0:8,
+		samples=100,
+		color=blue,
+		]
+		{(x<1.5)*1 + (1+0.5*(x-1.5))*(x>1.5)*(x<5.5) +
+			(1+0.5*(x-5.5))*(x>5.5)};
+		\addplot [
+		domain=0:8,
+		samples=100,
+		color=green,
+		]
+		{(x<1.75)*1 + (1+0.5*(x-1.75))*(x>1.75)*(x<5.75) +
+			(1+0.5*(x-5.75))*(x>5.75)};
+		\addplot [
+		domain=0:8,
+		samples=100,
+		color=orange,
+		]
+		{(x<2.1)*1 + (1+0.5*(x-2.1))*(x>2.1)*(x<6.1) +
+			(1+0.5*(x-6.1))*(x>6.1)};
+		\end{axis}
+	\end{tikzpicture}
+	\label{fig:received}
+	\caption{Frequencies of reflected signals from multiple objects}
+\end{figure}
+
+\section{Velocity Measurements}
+To determine the velocity of an object, we need to compare the phases from two
+transmitted chirps. We can approximate the phase of $r(t)$ as
+\begin{align}
+	\phi(r(t)) &= 2\pi f_c \tau - \pi \alpha \tau^2 \\
+	&\approx 2\pi f_c \tau\\
+	&= \frac{4\pi d}{\lambda},
+\end{align}
+assuming sufficiently small $\alpha$, and $\lambda$ the wavelength of
+the carrier signal. Now, the phase difference $\Delta \phi$ between two
+dechirped signals separated by
+$T_c$ and reflected by an object moving at velocity $v$ is given by
+\begin{equation}
+	\label{phase_diff}
+	\Delta\phi = \frac{4\pi v T_c}{\lambda}.
+\end{equation}
+However, phase difference is inherently ambiguous unless $|\Delta\phi|<\pi$, so
+we find the maximum velocity measurable by two chirps spaced $T_c$ apart is
+given by
+\begin{equation}
+	v_{max} = \frac{\lambda}{4 T_c}.
+\end{equation} 
+
+This two-chirp approach fails if we have multiple objects moving with different
+velocities, but the same range at the time of measurement. In this case, we use
+$N$ equally spaced chirps transmitted by the radar over a chirp frame $T_f =
+NT_c$. These reflected chirps are 
