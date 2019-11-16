@@ -12,11 +12,18 @@ modulation, given by
 \cite{iovescufundamentals, wang2008digital}
 \begin{equation}
 	\label{eq:sawtooth}
-	f(t) = f_c + \alpha t, \quad 0<t<T_c 
+	f(t) = f_c + \alpha (t - kT_c), \quad\text{for } kT_c \leq t < (k+1)T_c, \quad
+	k \in \mathbb{Z}
 \end{equation}
 where $\alpha > 0$ is the chirp-rate  $\frac{df}{dt}$, $f_c$ is the base
-carrier frequency (e.g. 77 GHz), and $T_c$ is the period of the chirp. The
-maximum frequency of each chirp is thus
+carrier frequency (e.g. 77 GHz), and $T_c$ is the period of the chirp. To
+simplify the calculations, we will deal with a single chirp until for range
+calculations, thus the frequency for a single chirp is 
+\begin{equation}
+	f(t) = f_c + \alpha t \quad\text{for } 0\leq t < T_c.
+\end{equation}
+
+The maximum frequency of each chirp is 
 \begin{equation}
 	f_{max} \triangleq f_c + \alpha T_c,
 \end{equation}
@@ -100,6 +107,7 @@ the transmitted (TX) signal as
 \end{figure}
 
 \section{Range Measurement}
+\label{sec:range}
 Consider a target at a distance $d$ from the radar, such that the transmitted
 (RX) signal reflects off the target and returns to the radar. This received signal
 will be a time delayed version of the TX signal, where the time delay $\tau$ is
@@ -179,7 +187,7 @@ for a given chirp period
 To recover the beat frequency $f_b$ from the dechirped signal, $r(t)$, we can
 simply use the Fourier Transform to get
 \begin{align}
-	R(f) &= \int_{-\infty}^{\infty} r(t) e^{-j2 \pi ft} dt\\
+	R_r(f) &= \int_{-\infty}^{\infty} r(t) e^{-j2 \pi ft} dt\\
 	&= \int_{-\infty}^{\infty} e^{j(2\pi f_c \tau - \pi \alpha \tau^2)}e^{j2\pi\alpha\tau t} e^{-j2\pi ft}dt\\
 	&= e^{j(2\pi f_c \tau - \pi \alpha
 	\tau^2)}\int_{-\infty}^{\infty}e^{-j2\pi(f - \alpha\tau ) t} dt\\
@@ -257,17 +265,36 @@ which will be discussed in Chapter 3.
 \end{figure}
 
 \section{Velocity Measurements}
-To determine the velocity of an object, we need to compare the phases from two
-transmitted chirps. We can approximate the phase of $r(t)$ as
+To determine the velocity of an object, we can compare the phases of two chirps
+reflected from the moving object. Recall from (\ref{eq:range}) that the first
+exponential term in $r(t)$ has no dependence on $t$, so it fully describes the phase. We
+can approximate this phase as a linear function of the time delay $\tau$, 
 \begin{align}
 	\phi(r(t)) &= 2\pi f_c \tau - \pi \alpha \tau^2 \\
-	&\approx 2\pi f_c \tau\\
-	&= \frac{4\pi d}{\lambda},
+	&\approx 2\pi f_c \tau.
 \end{align}
-assuming sufficiently small $\alpha$, and $\lambda$ the wavelength of
+For an object moving with velocity $v$ and initial range $d_0$, the time delay
+$\tau$ is given by 
+\begin{equation}
+	\tau = \frac{2(d_0 + vt)}{c}, \label{eq:moving-tau}
+\end{equation}
+so the linear phase approximation becomes
+\begin{equation}
+	\phi(r(t)) \approx \frac{4\pi(d_0 + vt)}{\lambda},
+\end{equation}
+where $\lambda = \frac{c}{f_c}$ the wavelength of
 the carrier signal. Now, the phase difference $\Delta \phi$ between two
 dechirped signals separated by
-$T_c$ and reflected by an object moving at velocity $v$ is given by
+$T_c$ is
+\begin{equation}
+	\Delta\phi = \frac{4\pi \Delta d}{\lambda},
+\end{equation}
+where $\Delta d$ is the distance the object travels over $T_c$ between the two
+chirps. For an object traveling at a velocity $v$, this distance is
+\begin{equation}
+	\Delta d = v T_c, 
+\end{equation}
+so the phase difference becomes
 \begin{equation}
 	\label{phase_diff}
 	\Delta\phi = \frac{4\pi v T_c}{\lambda}.
@@ -280,6 +307,81 @@ given by
 \end{equation} 
 
 This two-chirp approach fails if we have multiple objects moving with different
-velocities, but the same range at the time of measurement. In this case, we use
-$N$ equally spaced chirps transmitted by the radar over a chirp frame $T_f =
-NT_c$. These reflected chirps are 
+velocities, but the same range at the time of measurement. The reflected chirps
+will produce idential beat frequencies in this scenario, so the range processing
+Fourier Transform will result in a single peak representing the combined signals
+from the equidistant objects. In this case, we can use $N$ equally spaced chirps 
+transmitted by the radar over a chirp frame $T_f = NT_c$. 
+
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}
+		\begin{axis}[
+		axis x line = bottom,
+		axis y line = left,
+		xlabel = $t$,
+		ylabel=$f(t)$,
+		xmin=0, xmax=8.5,
+		ymin=0.5, ymax=5.2,
+		xtick=\empty,
+		ytick=\empty,
+		xlabel near ticks,
+		ylabel near ticks,
+		extra x ticks={2,4,8},
+		extra x tick labels={$T_c$, $2T_c$, $T_f =
+			NT_c$},
+		extra y ticks={0.5, 1, 5},
+		extra y tick labels={$0$, $f_c$, $f_{max}$},
+		]
+		\addplot [
+		domain=0:8,
+		samples=100,
+		color=black,
+		]
+		{(1 + 2*x)*(x<2) + (1+2*(x-2))*(x>2)*(x<4) + (1+2*(x-4))*(x>4)*(x<6) + (1+2*(x-6))*(x>6)*(x<8)};
+		\end{axis}
+	\end{tikzpicture}
+	\label{fig:chirp-frame}
+	\caption{Chirp frame $T_f$ consisting of $N$ chirps}
+\end{figure}
+
+Now we will need to use the full sawtooth frequency modulation as described in
+(\ref{eq:sawtooth}), so $p(t)$ is
+\begin{equation}
+	p(t) = e^{j(2\pi f_c t+ \pi \alpha t^2 - 2\pi\alpha kT_c t)}.
+\end{equation}
+Then, the dechirped signal $r(t)$ will be
+\begin{equation}
+	r(t) = e^{j(2\pi f_c \tau - \pi \alpha \tau^2 + 2\pi\alpha\tau (t-kT_c))}.
+\end{equation}
+Again, we approximate by eliminating the quadratic components to get
+\begin{equation}
+	\phi (r(t)) \approx 2\pi (f_c + \alpha t_k)\tau,
+	\label{eq:phase-approx}
+\end{equation}
+where 
+\begin{equation}
+	t_k \triangleq t - kT_c \quad \text{for }k\in\mathbb{Z}.
+\end{equation}
+Substituting (\ref{eq:moving-tau}) into (\ref{eq:phase-approx}) gives
+\begin{align}
+	\phi (r(t)) &\approx \frac{4\pi}{c}(f_c d_0 + f_c vt + \alpha d_0 t_k)\\
+	&= 2\pi (f_c \tau_0 + f_d t + t_k f_{\tau})\\
+	&= 2\pi (f_c \tau_0 + f_d k T_c + (f_{\tau} + f_d) t_k)
+\end{align}
+where $\tau_0$ is the initial time delay, $f_d$ is the Doppler Frequency, and
+$f_{\tau}$ is the range-beat-frequency, as defined below.
+\begin{align}
+	\tau_0 &\triangleq \frac{2d_0}{c}\\
+	f_d &\triangleq \frac{2v}{c} f_c\\
+	f_{\tau} &\triangleq \alpha\tau_0
+\end{align}
+For each $k$-th chirp, we compute $R_r(f,k)$ as in Section \ref{sec:range}, which
+contains the range information for the objects. Now, we can treat $R_r(f,k)$ as a
+discrete funtion of $k$, observed $N$ times over the course of the chirp frame
+$T_f$. Each of these $k$ spectrums will have a different phase which combines the
+phase contributions from each object at the corresponding range with different
+velocities. This spectrum is described by the following Fourier Transform
+\begin{equation}
+	R(f, \omega_v)) = \sum_{k=0}^{N-1}R_r(f, k) e^{-jk \omega_v T_c}
+\end{equation}
