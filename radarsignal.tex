@@ -454,13 +454,13 @@ approach occurs when the antenna spacing is
 \end{equation}
 giving $\theta_{max} = \pm\frac{\pi}{2}$.
 
-\subsection{Subspace Methods}
+\subsection{Multiple Signal Classification (MUSIC)}
 For Multiple Input Multiple Output (MIMO) FMCW radar systems, we can use more
 sophisticated angle of arrival techniques based on subspaces. Let
 us assume we have an arbitrary array of $L$ virtual transmit-receive antenna pairs, with an
 array response vector $\bm{a}(\theta)$. This response vector maps the direction
 of arrival $\theta$ to the signal phase shift at each of the $L$ virtual antenna
-pairs. For a set of $n$ objects, we will have $N$ return signals $r(t)$
+pairs. For a set of $N$ objects, we will have $N$ return signals $r(t)$
 returning to the antenna array. Let $\bm{x}(t)$ be the superposition of the
 signals so that \cite{bresler2017hilbert}
 \begin{align}
@@ -473,5 +473,54 @@ where
 	\bm{\theta} &= [\theta_1, \theta_2, \dots, \theta_N]^T\\
 	\bm{s}(t) &= [s_1(t), s_2(t), \dots, s_N(t)]^T.
 \end{align}
+If we sample $\bm{x}(t)$ at $M$ timesteps, we get the following matrix equation
+\begin{equation}
+	\bm{X} = \bm{A}(\bm{\theta})\bm{S}
+\end{equation}
+where $\bm{X}$ is a $L \times M$ matrix of samples, $\bm{A}(\bm{\theta})$ is a
+$L\times N$ matrix function, and $\bm{S}$ is a $N\times M$ matrix
+\begin{align}
+	\bm{X} &= [\bm{x}(t_1), \bm{x}(t_2), \dots, \bm{x}(t_M)]\\
+	\bm{S} &= [\bm{s}(t_1), \bm{s}(t_2), \dots, \bm{s}(t_M)].
+\end{align}
+Since $\bm{X}$ is the product of a $L\times N$ matrix and a $N\times M$ matrix,
+we have that $rank(\bm{X}) = N$, assuming $\bm{A}(\bm{\theta})$ has full column
+rank and $\bm{S}$ has full row rank. This corresponds to the number of objects
+whose angular position we are trying to compute. Now, since the range space of
+$\bm{X}$, $\mathcal{R}(\bm{X})$, is the same subspace as the range space of
+$\bm{A}(\bm{\theta})$
+\begin{equation}
+	\mathcal{R}(\bm{X}) = \mathcal{R}(\bm{A}(\bm{\theta})),
+\end{equation}
+we can use the Singular Value Decomposition (SVD) of $\bm{X}$ to recover
+$\theta_i$. The SVD of $\bm{X}$ is given by
+\begin{align}
+	\bm{X} &= \bm{U} \bm{\Sigma} \bm{V}^H\\
+	&= [\bm{U_s} | \bm{U_n}] \begin{bmatrix} \Sigma_s & 0 \\
+	0 & \bm{0} \end{bmatrix} \bm{V}^H
+\end{align}
+where the left singular vectors have been separated into those corresponding
+with the nonzero singular values ($\bm{U}_s$) and those corresponding to the
+zero singular values ($\bm{U}_n$). From linear algebra, we know the columns of
+$\bm{U}_s$ span the signal subspace $\mathcal{R}(\bm{X})$ and the columns of
+$\bm{U}_n$ span the left nullspace $\mathcal{N}{\bm{X}^H})$ of $\bm{X}$, which
+is the orthogonal complement of the signal subspace. In this context, we will
+call this subspace the noise subspace
+\begin{align}
+	\text{span}(\bm{U_n}) &= \mathcal{N}(\bm{X}^H) \\
+	&= \mathcal{R}(\bm{X})^\perp\\
+	&= \mathcal{R}(\bm{A}(\bm{\theta}))^\perp.
+\end{align}
+Now, if we sweep $\theta \in [0, 2\pi)$, $\bm{a}(\theta)$ wil lie in the left
+nullspace of $\bm{X}$ when $\theta=\theta_i$, where $\theta_i$ are the desired
+angles of arrival we are estimating, 
+\begin{equation}
+	\theta = \theta_i \iff \bm{U}_n^H \bm{a}(\theta) = 0.
+\end{equation}
+The Multiple Signal Classification (MUSIC)
+algorithm leverages this fact by finding the peaks in \cite{schmidt1986multiple}
+\begin{equation}
+	g(\theta) = \frac{1}{\|\bm{U}_n^H \bm{a}(\theta)\|^2}.
+\end{equation}
 
-
+\subsection{ESPRIT}
