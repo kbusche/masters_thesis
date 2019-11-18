@@ -270,8 +270,8 @@ reflected from the moving object. Recall from (\ref{eq:range}) that the first
 exponential term in $r(t)$ has no dependence on $t$, so it fully describes the phase. We
 can approximate this phase as a linear function of the time delay $\tau$, 
 \begin{align}
-	\phi(r(t)) &= 2\pi f_c \tau - \pi \alpha \tau^2 \\
-	&\approx 2\pi f_c \tau.
+	\phi(r(t)) &= 2\pi f_c \tau - \pi \alpha \tau^2 + 2\pi\alpha\tau t \\
+	\implies \angle r(t) &\approx 2\pi f_c \tau.
 \end{align}
 For an object moving with velocity $v$ and initial range $d_0$, the time delay
 $\tau$ is given by 
@@ -310,8 +310,8 @@ This two-chirp approach fails if we have multiple objects moving with different
 velocities, but the same range at the time of measurement. The reflected chirps
 will produce idential beat frequencies in this scenario, so the range processing
 Fourier Transform will result in a single peak representing the combined signals
-from the equidistant objects. In this case, we can use $N$ equally spaced chirps 
-transmitted by the radar over a chirp frame $T_f = NT_c$. 
+from the equidistant objects. In this case, we can use $K$ equally spaced chirps 
+transmitted by the radar over a chirp frame $T_f = KT_c$. 
 
 \begin{figure}[h]
 	\centering
@@ -329,7 +329,7 @@ transmitted by the radar over a chirp frame $T_f = NT_c$.
 		ylabel near ticks,
 		extra x ticks={2,4,8},
 		extra x tick labels={$T_c$, $2T_c$, $T_f =
-			NT_c$},
+			KT_c$},
 		extra y ticks={0.5, 1, 5},
 		extra y tick labels={$0$, $f_c$, $f_{max}$},
 		]
@@ -342,7 +342,7 @@ transmitted by the radar over a chirp frame $T_f = NT_c$.
 		\end{axis}
 	\end{tikzpicture}
 	\label{fig:chirp-frame}
-	\caption{Chirp frame $T_f$ consisting of $N$ chirps}
+	\caption{Chirp frame $T_f$ consisting of $K$ chirps}
 \end{figure}
 
 Now we will need to use the full sawtooth frequency modulation as described in
@@ -377,11 +377,101 @@ $f_{\tau}$ is the range-beat-frequency, as defined below.
 	f_{\tau} &\triangleq \alpha\tau_0
 \end{align}
 For each $k$-th chirp, we compute $R_r(f,k)$ as in Section \ref{sec:range}, which
-contains the range information for the objects. Now, we can treat $R_r(f,k)$ as a
-discrete funtion of $k$, observed $N$ times over the course of the chirp frame
+contains the range information for the objects,
+\begin{align}
+	R_r(f,k) &= \int_{\tau}^{T_c} r(t_k)e^{-j2\pi f t_k}dt_k\\
+	&= \int_{\tau}^{T_c} e^{j\phi(r(t_k))}e^{-j2\pi f t_k}dt_k\\
+	&= \int_{\tau}^{T_c} e^{j2\pi (f_c \tau_0 + f_d k T_c + (f_{\tau} + f_d) t_k)}e^{-j2\pi f t_k}dt_k.
+\end{align}
+The absolute value $|R_r(f,k)|$ is obtained for $f = f_d + f_\tau$, and, in
+general, $f_\tau >> f_d$, so we can resolve the ranges as before.
+Now, since the term $f_dkT_c$ depends on $k$, we see $R_r(f,k)$ is a 
+function of $k$, with sampling period $T_c$, observed $K$ consecutive times over the course of the chirp frame
 $T_f$. Each of these $k$ spectrums will have a different phase which combines the
 phase contributions from each object at the corresponding range with different
-velocities. This spectrum is described by the following Fourier Transform
+velocities. This spectrum is described by the following Discrete Fourier Transform
 \begin{equation}
-	R(f, \omega_v)) = \sum_{k=0}^{N-1}R_r(f, k) e^{-jk \omega_v T_c}
+	\label{eq:velocity-dft}
+	R(f, n) = \sum_{k=0}^{K-1}R_r(f, k) e^{-j\frac{2\pi}{K}kn},
 \end{equation}
+which achieves maximum absolute value (i.e. a peak) when 
+\begin{equation}
+	n = f_d T_c.
+\end{equation}
+
+In the case of multiple objects at the same range, but with different
+velocities, we will have peaks corresponding to the Doppler Frequencies of each
+object, enabling us to resolve the different velocities.
+
+\section{Computing Angle of Arrival}
+\label{sec:aoa}
+If the radar has at least 2 transmit-receive antenna pairs, we can use the
+phase change in the Fourier Transforms that arises from the slight difference
+in range the object has to each receiving antenna to calculate the angle of
+arrival (AoA) for the received signal. 
+
+% drawing of antenna and \delta d
+%\begin{figure}
+%	\begin{tikzpicture}
+%		
+%	\end{tikzpicture}
+%\end{figure}
+
+\subsection{Geometric Estimation}
+From Figure \ref{fig:angle-of-arrival}, we can derive the phase difference
+between the received signals $r_1(t)$ and $r_2(t)$ at two different antennas
+separated by a distance $x$. Let $d$ be the distance the received signal
+$r_1(t)$ travels to reach the first antenna  and $ d + \Delta d$ be the distance
+the reflected signal $r_2(t)$ travels to reach the second antenna. Assuming the
+radar signal is a planar wavefront, geometry gives
+\begin{equation}
+	\Delta d = x \sin \theta. 
+\end{equation}
+Now, the phase difference $\Delta \phi$ is given by
+\begin{equation}
+	\Delta \phi = \frac{2\pi \Delta d}{\lambda}.
+\end{equation}
+Now, we can compute the angle of arrival $\theta$ as 
+\begin{equation}
+	\theta = \sin^{-1}(\frac{\lambda\Delta\phi}{2\pi x}).
+\end{equation}
+However, since $\Delta\phi$ depends on $\sin\theta$, our accuracy degrades for
+large $\theta$, as $\sin\theta \approx \theta$ only for small $\theta$. 
+
+As before, the phase difference $|\Delta\phi |<\pi$ to be unambiguous, so we
+find
+\begin{equation}
+	\frac{2\pi x}{\lambda} \sin\theta < \pi,
+\end{equation}
+and the maximum field of view for two TX-RX antenna pairs spaced $x$ apart is 
+\begin{equation}
+	\theta_{max} = \sin^{-1}(\frac{\lambda}{2x}).
+\end{equation}
+Clearly, the largest angular field of view for two antenna pairs with this
+approach occurs when the antenna spacing is
+\begin{equation}
+	x = \frac{\lambda}{2},
+\end{equation}
+giving $\theta_{max} = \pm\frac{\pi}{2}$.
+
+\subsection{Subspace Methods}
+For Multiple Input Multiple Output (MIMO) FMCW radar systems, we can use more
+sophisticated angle of arrival techniques based on subspaces. Let
+us assume we have an arbitrary array of $L$ virtual transmit-receive antenna pairs, with an
+array response vector $\bm{a}(\theta)$. This response vector maps the direction
+of arrival $\theta$ to the signal phase shift at each of the $L$ virtual antenna
+pairs. For a set of $n$ objects, we will have $N$ return signals $r(t)$
+returning to the antenna array. Let $\bm{x}(t)$ be the superposition of the
+signals so that \cite{bresler2017hilbert}
+\begin{align}
+	\bm{x}(t) &= \sum_{n=1}^N s_n(t) \bm{a}(\theta_n)\\
+	&= \bm{A}(\bm{\theta})\bm{s}(t)
+\end{align}
+where
+\begin{align}
+	\bm{A}(\bm{\theta}) &= [\bm{a}(\theta_1), \bm{a}(\theta_2), \dots, \bm{a}(\theta_N)]\\
+	\bm{\theta} &= [\theta_1, \theta_2, \dots, \theta_N]^T\\
+	\bm{s}(t) &= [s_1(t), s_2(t), \dots, s_N(t)]^T.
+\end{align}
+
+
