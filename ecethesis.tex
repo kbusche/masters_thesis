@@ -13,9 +13,11 @@
 \usepackage{setspace}
 \usepackage{epsfig}  % for figures
 \usepackage{graphicx}  % another package that works for figures
-%\usepackage{subfigure}  % for subfigures
+\usepackage{pgfplots}
+\usepackage{subcaption}  % for subfigures
 \usepackage{amsmath}  % for math spacing
 \usepackage{amssymb}  % for math spacing
+\usepackage{bm}
 %\usepackage{url}  % Hyphenation of URLs.
 \usepackage{lscape}  % Useful for wide tables or figures.
 \usepackage[justification=raggedright]{caption}	% makes captions ragged right - thanks to Bryce Lobdell
@@ -98,7 +100,7 @@ Nothing and noone
 %
 % The List of Tables is not strictly necessary. Omitting the List of Tables will
 % simplify the thesis check and reduce the number of corrections.
-\listoftables
+%\listoftables
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % LIST OF FIGURES
@@ -134,7 +136,9 @@ Nothing and noone
 %
 
 \include{intro}	% for INTRODUCTION in "intro.tex"
-\include{radarsignal}
+\include{range}
+\include{velocity}
+\include{angle}
 %\include{concl}
 
 
