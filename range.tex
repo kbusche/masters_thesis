@@ -9,7 +9,7 @@ the complex form (with unit-normalized amplitude)
 \end{equation}
 The typical frequency modulation used in FMCW radar systems is the sawtooth
 modulation, given by
-\cite{iovescufundamentals, wang2008digital}
+\cite{stove1992linear, wang2008digital}
 \begin{equation}
 	\label{eq:sawtooth}
 	f(t) = f_c + \alpha (t - kT_c), \quad\text{for } kT_c \leq t < (k+1)T_c, \quad
@@ -267,8 +267,8 @@ unique beat frequencies corresponding to the time delays.
 
 However, in practice we must sample the received signal $r(t)$ with an
 Analog-to-Digital converter (ADC), with sampling frequency $f_s = 1/T_s$. To retrieve
-the beat frequencies, we take the $M$-point Discrete Fourier Transform (DFT) of
-$r(t)$ for each chirp period
+the beat frequencies, we take the $M$-point Discrete Fourier Transform (DFT)
+\cite{vetterli2014foundations} of $r(t)$ for each chirp period
 \begin{align}
 	R_r[f] &= \sum_{m=0}^{M-1} r[mT_s] e^{-j\frac{2\pi}{M}fm} \label{eq:range-fft}\\
 	&= \sum_{m=0}^{M-1} e^{j(2\pi f_c\tau -

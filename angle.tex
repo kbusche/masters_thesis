@@ -31,8 +31,9 @@ arrival (AoA) for the received signal.
 From Figure \ref{fig:angle-of-arrival}, we can derive the phase difference
 between the received signals $r_1(t)$ and $r_2(t)$ at two different antennas
 separated by a distance $x$. Let $d$ be the distance the received signal
-$r_1(t)$ travels to reach the first antenna  and $ d + \Delta d$ be the distance
-the reflected signal $r_2(t)$ travels to reach the second antenna. Assuming the
+$r_1(t)$ travels to reach the first antenna and $d + \Delta d$ be the distance
+the reflected signal $r_2(t)$ travels to reach the second antenna
+\cite{iovescu2017fundamentals}. Assuming the
 radar signal is a planar wavefront, the geometry shown in Figure
 \ref{fig:geometric-aoa} gives
 \begin{equation}
@@ -134,7 +135,7 @@ with the nonzero singular values ($\bm{U}_s$) and those corresponding to the
 zero singular values ($\bm{U}_n$). From linear algebra, we know the columns of
 $\bm{U}_s$ span the signal subspace $\mathcal{R}(\bm{X})$ and the columns of
 $\bm{U}_n$ span the left nullspace $\mathcal{N}{\bm{X}^H})$ of $\bm{X}$, which
-is the orthogonal complement of the signal subspace. In this context, we will
+is the orthogonal complement of the signal subspace \cite{meyer2000matrix}. In this context, we will
 call this subspace the noise subspace
 \begin{align}
 	\text{span}(\bm{U_n}) &= \mathcal{N}(\bm{X}^H) \\
