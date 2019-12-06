@@ -1,5 +1,5 @@
 \chapter{Estimating Range}
-As the name Frequency Modulated Continuous Wave (FMCW) implies, a FMCW radar is
+As the name frequency-modulated continuous-wave (FMCW) implies, an FMCW radar is
 a continuous time system which transmits and receives a periodic signal whose 
 frequency has been modulated. As a periodic signal, the transmitted signal has
 the complex form (with unit-normalized amplitude)
@@ -13,16 +13,17 @@ modulation, given by
 \begin{equation}
 	\label{eq:sawtooth}
 	f(t) = f_c + \alpha (t - kT_c), \quad\text{for } kT_c \leq t < (k+1)T_c, \quad
-	k \in \mathbb{Z}
+	k \in \mathbb{Z},
 \end{equation}
 where $\alpha > 0$ is the chirp-rate  $\frac{df}{dt}$, $f_c$ is the base
-carrier frequency (e.g. 77 GHz), and $T_c$ is the period of the chirp. To
-simplify the calculations, we will deal with a single chirp until for range
+carrier frequency (e.g. 77 GHz), and $T_c$ is the period of the chirp, as shown
+in Figure \ref{fig:freq-mod}.
+
+To simplify the calculations, we will deal with a single chirp for range
 calculations, thus the frequency for a single chirp is 
 \begin{equation}
 	f(t) = f_c + \alpha t \quad\text{for } 0\leq t < T_c.
 \end{equation}
-
 The maximum frequency of each chirp is 
 \begin{equation}
 	f_{max} \triangleq f_c + \alpha T_c,
@@ -104,19 +105,23 @@ the transmitted (TX) signal as
 		\label{fig:pulse}
 		\caption{Example of TX signal $p(t)$}
 	\end{subfigure}
+	\caption{Sawtooth frequency modulation and corresponding transmitted signal}
+	\label{fig:freq-mod}
 \end{figure}
 
 Consider a target at a distance $d$ from the radar, such that the transmitted
 (RX) signal reflects off the target and returns to the radar. This received signal
-will be a time delayed version of the TX signal, where the time delay $\tau$ is
+will be a time-delayed version of the TX signal, where the time delay $\tau$ is
 given by
 \begin{equation}
-	\tau = \frac{2d}{c}
+	\tau = \frac{2d}{c},
 \end{equation}
 where $c$ is the speed of light. The RX signal thus has the form
 \begin{equation}
 	p(t-\tau)=e^{j(2\pi f_c (t-\tau) + \pi\alpha (t-\tau)^2)}.
 \end{equation}
+Figure \ref{fig:single-target} depicts the effect of $\tau$ on the sawtooth frequency
+modulation.
 
 \begin{figure}[h]
 	\centering
@@ -153,8 +158,8 @@ where $c$ is the speed of light. The RX signal thus has the form
 		{(x<1)*1 + (1+0.5*(x-1))*(x>1)*(x<5) + (1+0.5*(x-5))*(x>5)};
 		\end{axis}
 	\end{tikzpicture}
-	\label{fig:received}
 	\caption{Frequency of RX signal (delayed by time $\tau$)}
+	\label{fig:single-target}
 \end{figure}
 
 To recover $\tau$, and subsequently $d$, we define a new dechirped signal $r(t)$
@@ -165,7 +170,7 @@ received signal
 	&= e^{j(2\pi f_c t + \pi \alpha t^2)}e^{-j[2\pi f_c (t-\tau) + \pi\alpha (t-\tau)^2 ]} \\
 	&= e^{j(2\pi f_c \tau - \pi \alpha \tau^2)}e^{j2\pi\alpha\tau t}.\label{eq:range}
 \end{align}
-Note, the first exponential in (\ref{eq:range}) only depends on $\tau$, so it is
+Note that the first exponential in (\ref{eq:range}) only depends on $\tau$, so it is
 a constant phase term. However, the second term varies according to a constant
 frequency (named the beat frequency) $f_b$
 \begin{equation}
@@ -174,21 +179,22 @@ frequency (named the beat frequency) $f_b$
 Recovering $f_b$ allows us to recover the distance $d$ as
 \begin{equation}
 	\label{eq:distance}
-	d = \frac{c f_b}{2\alpha}
+	d = \frac{c f_b}{2\alpha}.
 \end{equation}
 The maximum beat frequency occurs when $\tau = T_c$, as any $\tau \in (T_c, 2T_c]$ will
 appear as $\tau^*$
 \begin{equation}
-	\tau^* = \tau - T_c, \quad \tau \in (T_c, 2T_c]
+	\tau^* = \tau - T_c, \quad \tau \in (T_c, 2T_c],
 \end{equation}
-and thus the recovered distance $d^*$ will be less than the true range the
-target is from the radar. From this, we can get our maximum recoverable distance
+and thus the recovered distance $d^*$ will be less than the true range 
+of the target from the radar. From this, we can get our maximum recoverable distance
 for a given chirp period
 \begin{equation}
 	d_{max} = \frac{c T_c}{2}.
 \end{equation}
+
 To recover the beat frequency $f_b$ from the dechirped signal, $r(t)$, we can
-simply use the Fourier Transform to get
+simply use the Fourier transform to get
 \begin{align}
 	R_r(f) &= \int_{-\infty}^{\infty} r(t) e^{-j2 \pi ft} dt \label{eq:range-ft}\\
 	&= \int_{-\infty}^{\infty} e^{j(2\pi f_c \tau - \pi \alpha \tau^2)}e^{j2\pi\alpha\tau t} e^{-j2\pi ft}dt\\
@@ -196,15 +202,15 @@ simply use the Fourier Transform to get
 	\tau^2)}\int_{-\infty}^{\infty}e^{-j2\pi(f - \alpha\tau ) t} dt\\
 	&= e^{j(2\pi f_c \tau - \pi \alpha \tau^2)}\delta (f - \alpha \tau),
 \end{align}
-where $\delta(f)$ is the Dirac Delta function.
+where $\delta(f)$ is the Dirac delta function.
 
-Now consider the case of multiple ($N$) objects at different distances $d_i$ from the radar.
+Now consider the case of multiple ($N$) objects at different distances $d_i$ from the radar
 \begin{equation}
-	d_i \not = d_j \quad \text{for } i \not = j, \quad i,j \in [1, N]
+	d_i \not = d_j \quad \text{for } i \not = j, \quad i,j \in [1, N].
 \end{equation}
 Each of these objects will reflect the transmitted chirp with a unique delay
-$\tau_i$, and therefore will have a unique beat frequency corresponding to these
-delays. Using the continuous time Fourier Transform, we can always resolve the
+$\tau_i$, as seen in Figure \ref{fig:multi-received}, and therefore will have a unique beat frequency corresponding to these
+delays. Using the continuous-time Fourier transform, we can always resolve the
 unique beat frequencies corresponding to the time delays. 
 
 \begin{figure}[h]
@@ -261,24 +267,24 @@ unique beat frequencies corresponding to the time delays.
 			(1+0.5*(x-6.1))*(x>6.1)};
 		\end{axis}
 	\end{tikzpicture}
-	\label{fig:received}
 	\caption{Frequencies of reflected signals from multiple objects}
+	\label{fig:multi-received}
 \end{figure}
 
 However, in practice we must sample the received signal $r(t)$ with an
-Analog-to-Digital converter (ADC), with sampling frequency $f_s = 1/T_s$. To retrieve
-the beat frequencies, we take the $M$-point Discrete Fourier Transform (DFT)
+analog-to-digital converter (ADC), with sampling frequency $f_s = 1/T_s$. To retrieve
+the beat frequencies, we take the $M$-point discrete Fourier transform (DFT)
 \cite{vetterli2014foundations} of $r(t)$ for each chirp period
 \begin{align}
 	R_r[f] &= \sum_{m=0}^{M-1} r[mT_s] e^{-j\frac{2\pi}{M}fm} \label{eq:range-fft}\\
 	&= \sum_{m=0}^{M-1} e^{j(2\pi f_c\tau -
 	\pi\alpha\tau^2)}e^{j2\pi\alpha\tau mT_s} e^{-j\frac{2\pi}{M}fm}.
 \end{align}
-From this, we can see $R_r[f]$ has a peak when $f=MT_s\alpha\tau$, and since
+From this, we can see that $R_r[f]$ has a peak when $f=MT_s\alpha\tau$, and since
 $M$, $T_s$, and $\alpha$ are configured parameters, we can recover $\tau$ and
 subsequently the distance $d$.
-This processing can be done efficiently on hardware with the Fast Fourier Transform (FFT),
-so this step is often called the Range-FFT. 
+This processing can be done efficiently on hardware with the fast Fourier transform (FFT),
+so this step is often called the range-FFT. 
 
 Since we are using the DFT, we can only resolve frequency components
 separated by $1/T_c$, as $T_c$ is the observation window,
