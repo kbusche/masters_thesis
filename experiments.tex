@@ -1,5 +1,5 @@
 \chapter{Experiments}
-Recall an FMCW radar system has several configurable parameters, including the
+Recall that an FMCW radar system has several configurable parameters, including the
 chirp rate $\alpha$, the chirp period $T_c$, and the number of chirps $K$ in a chirp
 frame. To verify the FMCW radar mathematics and investigate
 the effects of these parameters, we ran several simulations in Python.
@@ -17,14 +17,14 @@ model, we also include additive white Gaussian noise on the received signal.
 
 \begin{table}[h]
 	\centering
+	\caption{Simulated target initial positions and velocities}
 	\begin{tabular}{l|c|c}
 		Target & Range & Velocity \\
 		\hline
-		Target 1 & $5.0 m$ & $0 m/s$ \\
-		Target 2 & $10.0 m$ & $5.0 m/s$ \\
-		Target 3 & $20.0 m$ & $-7.5 m/s$ 
+		Target 1 & 5.0 m & 0 m/s \\
+		Target 2 & 10.0 m & 5.0 m/s \\
+		Target 3 & 20.0 m & -7.5 m/s 
 	\end{tabular}
-	\caption{Simulated target initial positions and velocities}
 	\label{tab:targets}
 \end{table}
 
@@ -52,13 +52,13 @@ in both plots, corresponding to the three targets. The recovered distances were
 	\begin{subfigure}[c]{0.5\textwidth}
 		\centering
 		\includegraphics[width=2.5in]{imgs/baseline_doppler}
-		\caption{Dopper-FFT for the baseline parameters}
+		\caption{Doppler-FFT for the baseline parameters}
 	\end{subfigure}
 	\caption{Baseline simulation results}
 	\label{fig:baseline}
 \end{figure}
 
-Now consider the case where the bandwidth is doubled to $1 GHz$ while
+Now consider the case where the bandwidth is doubled to 1 GHz while
 maintaining the same chirp period. This clearly doubles the chirp rate, giving
 us a range resolution of 10.5 cm, but a maximum distance of only 26.9 m, keeping
 the other parameters the same from the baseline simulation. We can see from the
@@ -67,7 +67,7 @@ peaks corresponding to the targets, with recovered distances 4.96 m, 10.02 m,
 and 19.93 m and corresponding recovered velocities of 0.0 m/s, 5.07 m/s, and
 -7.10 m/s. Though both plots show the improved range resolution, the
 range-Doppler plot more clearly shows the range resolution change as the pixel
-widths corresponding the range bins are more clearly demarcated.  
+widths corresponding to the range bins are more clearly demarcated.  
 
 \begin{figure}[h]
 	\centering 
@@ -80,7 +80,7 @@ widths corresponding the range bins are more clearly demarcated.
 	\begin{subfigure}[c]{0.5\textwidth}
 		\centering
 		\includegraphics[width=2.5in]{imgs/bandwidth_doppler}
-		\caption{Dopper-FFT for the 1 GHz bandwidth version of the
+		\caption{Doppler-FFT for the 1 GHz bandwidth version of the
 		baseline system}
 	\end{subfigure}
 	\caption{Increased bandwidth simulation results}
@@ -92,7 +92,7 @@ the chirp period doubled to 120 $\mu$s. With a bandwidth of 500 MHz, this halves
 the chirp rate of the baseline system. By halving the chirp rate, our range
 resolution decreases to 42.2 cm and the maximum range increases to 107.6 m. We
 also see the velocity resolution improve to 0.51 m/s but the velocity range is
-halved to $\pm$7.61 m/s. Figure $\ref{fig:period}$ shows the simulations
+halved to $\pm$7.61 m/s. Figure $\ref{fig:period}$ shows the simulation
 results, with recovered distances 5.06 m, 10.13 m, and 19.83 m. We see that the
 Doppler-FFT recovers two clean peaks for the first two targets, with recovered
 velocities 0.0 m/s and 5.07 m/s respectively. However, due to the FFT smearing, the second target's
@@ -110,7 +110,7 @@ m/s.
 	\begin{subfigure}[c]{0.5\textwidth}
 		\centering
 		\includegraphics[width=2.5in]{imgs/long_period_doppler}
-		\caption{Dopper-FFT for 120 $\mu$s chirp period system
+		\caption{Doppler-FFT for 120 $\mu$s chirp period system
 		system}
 	\end{subfigure}
 	\caption{Increased chirp period simulation results}
@@ -124,7 +124,7 @@ are padding the input signal of length 15 (number of chirps) to be length 32 for
 the FFT. This increase in zero-padding from the baseline case more clearly shows
 the Doppler-FFT sampling on the non-zero points of the rectangle window
 spectrum, causing this spectrum leakage. Choosing a different windowing
-function, such as the Hamming window could help alleviate this spectral leakage,
+function, such as the Hamming window, could help alleviate this spectral leakage,
 though more investigation into the proper window choice is still required.
 
 \begin{figure}[h]
@@ -138,17 +138,18 @@ though more investigation into the proper window choice is still required.
 	\begin{subfigure}[c]{0.5\textwidth}
 		\centering
 		\includegraphics[width=2.5in]{imgs/chirps_doppler}
-		\caption{Dopper-FFT for 15 chirps/frame system}
+		\caption{Doppler-FFT for 15 chirps/frame system}
 	\end{subfigure}
 	\caption{Decreased number of chirps per frame results}
 	\label{fig:chirps}
 \end{figure}
 
-Table \ref{tab:simulation} provides a summary of the different scenarios
+Table \ref{tab:simulations} provides a summary of the different scenarios
 simulated here.
 
 \begin{table}[h] 
 	\centering
+	\caption{List of simulation parameters}
 	\begin{tabular}{l|c|c|c|c}
 		Simulation & Bandwidth & Chirp Period & Chirp Rate & Number of
 		Chirps \\
@@ -158,6 +159,5 @@ simulated here.
 		Chirp Period&500 MHz&\bf{120 $\mu$s}&\bf{4.167 MHz/$\mu$s}&30\\
 		Chirp Number&500 MHz&60 $\mu$s&8.33 MHz/$\mu$s&\bf{15}\\
 	\end{tabular}
-	\caption{List of simulation parameters}
 	\label{tab:simulations}
 \end{table}	
