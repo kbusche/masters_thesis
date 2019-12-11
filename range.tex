@@ -287,13 +287,22 @@ This processing can be done efficiently on hardware with the fast Fourier transf
 so this step is often called the range-FFT. 
 
 Since we are using the DFT, we can only resolve frequency components
-separated by $1/T_c$, as $T_c$ is the observation window,
+separated by $1/T_{window}$, where $T_{window}$ is the observation window,
 \begin{equation}
-	\Delta f > \frac{1}{T_c}.	
+	\Delta f > \frac{1}{T_{window}}.	
 \end{equation}
-From (\ref{eq:distance}), we get the range-cell resolution
+Now let the observation window be the chirp period, $T_c$, such
+that, from (\ref{eq:distance}), we get the range-cell resolution
 \begin{align}
 	\Delta d &= \frac{c\Delta f}{2\alpha}\\
-	\implies \Delta d &> \frac{c}{2\alpha T_c} = \frac{2}{2B}. \label{eq:range-res}
+	\implies \Delta d &> \frac{c}{2\alpha T_c} = \frac{c}{2B}. \label{eq:range-res}
 \end{align}
 
+With an $M$-point DFT, the maximuim recoverable frequency is 
+\begin{equation}
+	f_{b,max} = \frac{M-1}{T_sM},
+\end{equation}
+so the maximum recoverable distance is
+\begin{equation}
+	d_{max} = \frac{(M-1)c}{2\alpha T_sM}.
+\end{equation}
